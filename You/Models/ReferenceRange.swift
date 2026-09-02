@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// The healthy interval a pathology lab prints beside a marker, e.g. ferritin 30–300 µg/L.
+/// The healthy interval a pathology lab prints beside a marker, e.g. ferritin 30–300 
 ///
 /// Business rule: a value counts as in range when it sits on or between both bounds.
 /// Labs treat a value exactly on a bound as within range, so both bounds are inclusive.

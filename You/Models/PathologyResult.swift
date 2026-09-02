@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// One pathology report — the document a patient receives after a blood test, holding every marker the lab measured from a single sample.
+/// One pathology report: the document a patient receives after a blood test, holding every marker the lab measured from a single sample.
 ///
 /// Business rules:
 /// - A report belongs to one collection date. The same marker cannot appear twice for the same date (enforced by `RecordPathologyResultUseCase`).
@@ -22,7 +22,7 @@ struct PathologyResult: Identifiable, Codable, Hashable {
     /// Every marker the lab measured in this report.
     let markers: [MarkerReading]
 
-    /// The readings outside their healthy range -> the ones worth discussing at the patient's next appointment.
+    /// The readings outside their healthy range: the ones worth discussing at the patient's next appointment.
     var flaggedMarkers: [MarkerReading] {
         markers.filter(\.isFlagged)
     }

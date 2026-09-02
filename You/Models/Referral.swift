@@ -22,7 +22,7 @@ struct Referral: Identifiable, Codable, Hashable {
 
     let kind: Kind
 
-    /// What the referral is for, as the patient would say it, e.g. "Iron studies re-check".
+    /// What the referral is for, as the patient would say it, e.g. "Iron studies re-check"
     let purpose: String
 
     /// The clinician who wrote the referral, e.g. "Dr Tran".

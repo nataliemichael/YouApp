@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// One measured marker inside a pathology report e.g a single line such as "Ferritin 9 µg/L (30–300)".
+/// One measured marker inside a pathology report e.g a single line such as "Ferritin 9 µg/L (30–300)"
 ///
 /// Business rules:
 /// - A reading always keeps the unit the lab reported. Values are never compared across different units.
