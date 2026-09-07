@@ -6,20 +6,20 @@
 import SwiftUI
 
 /// The first screen: a short "needs your attention" summary, then the patient's
-/// pathology results newest first. Reads from SampleData until the repository exists.
+/// pathology results newest first.
 struct HomeView: View {
-    @State private var isAddingResult = false
+    @ObservedObject var resultsViewModel: ResultsViewModel
+    @ObservedObject var followUpsViewModel: FollowUpsViewModel
 
-    private let results = SampleData.results
-    private let followUpTasks = SampleData.followUpTasks
+    @State private var isAddingResult = false
 
     /// Flagged markers from the most recent report.
     private var attentionMarkers: [MarkerReading] {
-        results.first?.flaggedMarkers ?? []
+        resultsViewModel.results.first?.flaggedMarkers ?? []
     }
 
     private var openTaskCount: Int {
-        followUpTasks.filter { !$0.isCompleted }.count
+        followUpsViewModel.openTasks.count
     }
 
     var body: some View {
@@ -47,7 +47,7 @@ struct HomeView: View {
                 }
 
                 Section("Your results") {
-                    ForEach(results) { result in
+                    ForEach(resultsViewModel.results) { result in
                         NavigationLink(value: result) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(result.collectedOn.formatted(date: .abbreviated, time: .omitted))
@@ -74,7 +74,11 @@ struct HomeView: View {
                 }
             }
             .sheet(isPresented: $isAddingResult) {
-                RecordResultView()
+                RecordResultView(viewModel: resultsViewModel)
+            }
+            .onAppear {
+                resultsViewModel.load()
+                followUpsViewModel.load()
             }
         }
     }
@@ -90,5 +94,9 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    let repository = InMemoryHealthRecordRepository()
+    return HomeView(
+        resultsViewModel: ResultsViewModel(repository: repository),
+        followUpsViewModel: FollowUpsViewModel(repository: repository)
+    )
 }

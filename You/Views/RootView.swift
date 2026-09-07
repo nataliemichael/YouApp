@@ -6,16 +6,27 @@
 import SwiftUI
 
 /// The app's two main areas: understanding results (Home) and acting on them (Follow-ups).
-/// Mirrors the two halves of the A1 challenge statement — understand, then complete.
+/// Both tabs share the one record store through their ViewModels.
 struct RootView: View {
+    @StateObject private var resultsViewModel: ResultsViewModel
+    @StateObject private var followUpsViewModel: FollowUpsViewModel
+
+    init(repository: HealthRecordRepository) {
+        _resultsViewModel = StateObject(wrappedValue: ResultsViewModel(repository: repository))
+        _followUpsViewModel = StateObject(wrappedValue: FollowUpsViewModel(repository: repository))
+    }
+
     var body: some View {
         TabView {
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "heart.text.square")
-                }
+            HomeView(
+                resultsViewModel: resultsViewModel,
+                followUpsViewModel: followUpsViewModel
+            )
+            .tabItem {
+                Label("Home", systemImage: "heart.text.square")
+            }
 
-            FollowUpsView()
+            FollowUpsView(viewModel: followUpsViewModel)
                 .tabItem {
                     Label("Follow-ups", systemImage: "checklist")
                 }
@@ -24,5 +35,5 @@ struct RootView: View {
 }
 
 #Preview {
-    RootView()
+    RootView(repository: InMemoryHealthRecordRepository())
 }

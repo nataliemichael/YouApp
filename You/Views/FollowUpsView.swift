@@ -6,24 +6,22 @@
 import SwiftUI
 
 /// Everything the patient still needs to act on: referrals with their expiry dates,
-/// and follow-up tasks sorted by due date. Reads from SampleData until the repository exists.
+/// and follow-up tasks sorted by due date. Tapping a task's circle marks it done.
 struct FollowUpsView: View {
-    private let referrals = SampleData.referrals
-    private let tasks = SampleData.followUpTasks
+    @ObservedObject var viewModel: FollowUpsViewModel
 
-    private var openTasks: [FollowUpTask] {
-        tasks.filter { !$0.isCompleted }.sorted { $0.dueOn < $1.dueOn }
-    }
-
-    private var completedTasks: [FollowUpTask] {
-        tasks.filter(\.isCompleted)
-    }
+    @State private var isAddingReferral = false
 
     var body: some View {
         NavigationStack {
             List {
                 Section("Your referrals") {
-                    ForEach(referrals) { referral in
+                    if viewModel.referrals.isEmpty {
+                        Text("No referrals tracked yet. Add one and the app will remind you before it expires.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    ForEach(viewModel.referrals) { referral in
                         VStack(alignment: .leading, spacing: 4) {
                             Text(referral.purpose)
                                 .font(.headline)
@@ -45,34 +43,60 @@ struct FollowUpsView: View {
                 }
 
                 Section("To do") {
-                    ForEach(openTasks) { task in
+                    if viewModel.openTasks.isEmpty {
+                        Text("Nothing waiting — you're up to date.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    ForEach(viewModel.openTasks) { task in
                         taskRow(task)
                     }
                 }
 
-                if !completedTasks.isEmpty {
+                if !viewModel.completedTasks.isEmpty {
                     Section("Done") {
-                        ForEach(completedTasks) { task in
+                        ForEach(viewModel.completedTasks) { task in
                             taskRow(task)
                         }
                     }
                 }
             }
             .navigationTitle("Follow-ups")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        isAddingReferral = true
+                    } label: {
+                        Label("Track a referral", systemImage: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $isAddingReferral) {
+                AddReferralView(viewModel: viewModel)
+            }
+            .onAppear {
+                viewModel.load()
+            }
         }
     }
 
     @ViewBuilder
     private func taskRow(_ task: FollowUpTask) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(task.isCompleted ? .green : .secondary)
-                .padding(.top, 2)
+            Button {
+                viewModel.toggleCompletion(of: task)
+            } label: {
+                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(task.isCompleted ? Color.green : Color.secondary)
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 2)
+            .accessibilityLabel(task.isCompleted ? "Mark \(task.title) as not done" : "Mark \(task.title) as done")
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(task.title)
                     .font(.headline)
-                    .foregroundStyle(task.isCompleted ? .secondary : .primary)
+                    .foregroundStyle(task.isCompleted ? Color.secondary : Color.primary)
                 if let detail = task.detail {
                     Text(detail)
                         .font(.subheadline)
@@ -98,5 +122,5 @@ struct FollowUpsView: View {
 }
 
 #Preview {
-    FollowUpsView()
+    FollowUpsView(viewModel: FollowUpsViewModel(repository: InMemoryHealthRecordRepository()))
 }
