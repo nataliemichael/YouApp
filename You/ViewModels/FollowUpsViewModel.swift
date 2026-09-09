@@ -39,6 +39,14 @@ final class FollowUpsViewModel: ObservableObject {
         tasks.filter(\.isCompleted)
     }
 
+    /// The single most urgent thing the patient should do next, across referrals
+    /// and tasks alike. `PatientActionable` lets one sort compare both kinds.
+    var mostUrgentAction: PatientActionable? {
+        let actionables: [PatientActionable] =
+            referrals.filter { !$0.isExpired() } + openTasks
+        return actionables.min { $0.actBy < $1.actBy }
+    }
+
     /// Starts tracking a referral from the entry form. Returns true when saved, false
     /// when refused, in which case `errorMessage` explains why in the patient's words.
     func track(

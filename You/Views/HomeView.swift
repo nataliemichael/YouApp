@@ -48,6 +48,14 @@ struct HomeView: View {
 
                 if !attentionMarkers.isEmpty || openTaskCount > 0 {
                     Section("Needs your attention") {
+                        if let next = followUpsViewModel.mostUrgentAction {
+                            Label {
+                                Text("Next: \(next.patientAction), by \(next.actBy.formatted(date: .abbreviated, time: .omitted))")
+                            } icon: {
+                                Image(systemName: "arrow.forward.circle.fill")
+                                    .foregroundStyle(AppColours.teal)
+                            }
+                        }
                         ForEach(attentionMarkers) { reading in
                             Label {
                                 Text("\(reading.markerName) is outside the healthy range")
@@ -58,7 +66,9 @@ struct HomeView: View {
                         }
                         if openTaskCount > 0 {
                             Label {
-                                Text("^[\(openTaskCount) follow-up](inflect: true) waiting in Follow-ups")
+                                Text(openTaskCount == 1
+                                    ? "1 follow-up waiting in Follow-ups"
+                                    : "\(openTaskCount) follow-ups waiting in Follow-ups")
                             } icon: {
                                 Image(systemName: "checklist")
                                     .foregroundStyle(AppColours.teal)
