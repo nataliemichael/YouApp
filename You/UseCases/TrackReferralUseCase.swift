@@ -30,12 +30,12 @@ enum TrackReferralError: LocalizedError, Equatable {
 ///
 /// The business operation: the patient copies the details from a paper referral into
 /// the app. If the referral is still usable, the app saves it and books a follow-up
-/// task reminding the patient to act three days before it expires — or today, when
+/// task reminding the patient to act three days before it expires, or today, when
 /// the expiry is closer than that.
 ///
 /// Business rules, checked in order:
 /// 1. A referral cannot expire before it was written.
-/// 2. An already-expired referral cannot be tracked — the patient needs a new one,
+/// 2. An already-expired referral cannot be tracked, the patient needs a new one,
 ///    and the app says so rather than storing a dead document.
 /// 3. The same referral (same kind, purpose and issue date) is only tracked once.
 struct TrackReferralUseCase {

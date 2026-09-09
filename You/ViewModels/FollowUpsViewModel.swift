@@ -24,7 +24,7 @@ final class FollowUpsViewModel: ObservableObject {
         load()
     }
 
-    /// Re-reads the store — referrals with the soonest expiry first.
+    /// Re-reads the store, referrals with the soonest expiry first.
     func load() {
         referrals = repository.referrals.sorted { $0.expiresOn < $1.expiresOn }
         tasks = repository.followUpTasks
@@ -40,7 +40,7 @@ final class FollowUpsViewModel: ObservableObject {
     }
 
     /// Starts tracking a referral from the entry form. Returns true when saved, false
-    /// when refused — in which case `errorMessage` explains why in the patient's words.
+    /// when refused, in which case `errorMessage` explains why in the patient's words.
     func track(
         kind: Referral.Kind,
         purpose: String,

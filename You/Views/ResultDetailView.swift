@@ -30,7 +30,7 @@ struct ResultDetailView: View {
                         Spacer()
                         Text("\(reading.value.formatted()) \(reading.unit)")
                             .font(.headline)
-                            .foregroundStyle(reading.isFlagged ? .orange : .primary)
+                            .foregroundStyle(reading.isFlagged ? AppColours.coral : Color.primary)
                     }
 
                     ReferenceRangeBar(reading: reading)
@@ -38,7 +38,7 @@ struct ResultDetailView: View {
 
                     Text(statusLine(for: reading))
                         .font(.subheadline)
-                        .foregroundStyle(reading.isFlagged ? .orange : .secondary)
+                        .foregroundStyle(reading.isFlagged ? AppColours.coral : Color.secondary)
 
                     Text(reading.plainLanguageExplanation)
                         .font(.subheadline)
@@ -47,13 +47,15 @@ struct ResultDetailView: View {
             }
 
             Section {
-                Text("This explains your results in plain language. It is not medical advice — your GP is the right person to interpret what it means for you.")
+                Text("This explains your results in plain language. It is not medical advice. Your GP is the right person to interpret what it means for you.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
         }
         .navigationTitle("Your results")
         .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(AppColours.paleTeal)
     }
 
     private func statusLine(for reading: MarkerReading) -> String {
@@ -62,9 +64,9 @@ struct ResultDetailView: View {
         case .inRange:
             return "Within the healthy range (\(range.lowerBound.formatted())–\(range.upperBound.formatted()))"
         case .belowRange:
-            return "Below the healthy range (\(range.lowerBound.formatted())–\(range.upperBound.formatted())) — worth raising with your GP"
+            return "Below the healthy range (\(range.lowerBound.formatted())–\(range.upperBound.formatted())), worth raising with your GP"
         case .aboveRange:
-            return "Above the healthy range (\(range.lowerBound.formatted())–\(range.upperBound.formatted())) — worth raising with your GP"
+            return "Above the healthy range (\(range.lowerBound.formatted())–\(range.upperBound.formatted())), worth raising with your GP"
         }
     }
 }

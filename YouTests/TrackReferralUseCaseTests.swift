@@ -7,7 +7,7 @@ import Foundation
 import Testing
 @testable import You
 
-/// Tests for `TrackReferralUseCase` — the rules that stop a referral quietly
+/// Tests for `TrackReferralUseCase`, the rules that stop a referral quietly
 /// expiring in a drawer. Fresh empty store and fixed dates for every test.
 struct TrackReferralUseCaseTests {
 
@@ -26,7 +26,7 @@ struct TrackReferralUseCaseTests {
         let referral = try useCase.execute(
             kind: .pathology,
             purpose: "Iron studies re-check",
-            issuedBy: "Dr Tran",
+            issuedBy: "Dr Michael",
             issuedOn: date(2026, 9, 1),
             expiresOn: date(2026, 9, 20),
             today: date(2026, 9, 4)
@@ -43,12 +43,12 @@ struct TrackReferralUseCaseTests {
     @Test func test_trackReferral_remindsToday_whenExpiryIsWithinThreeDays() throws {
         let (useCase, repository) = makeUseCase()
 
-        // Expiry is only two days away — the reminder can't be "three days before",
+        // Expiry is only two days away, the reminder can't be "three days before",
         // so it falls due today rather than in the past.
         try useCase.execute(
             kind: .pathology,
             purpose: "Iron studies re-check",
-            issuedBy: "Dr Tran",
+            issuedBy: "Dr Michael",
             issuedOn: date(2026, 9, 1),
             expiresOn: date(2026, 9, 6),
             today: date(2026, 9, 4)
@@ -64,7 +64,7 @@ struct TrackReferralUseCaseTests {
             try useCase.execute(
                 kind: .specialist,
                 purpose: "Dermatologist skin check",
-                issuedBy: "Dr Tran",
+                issuedBy: "Dr Michael",
                 issuedOn: date(2025, 8, 1),
                 expiresOn: date(2026, 8, 1),
                 today: date(2026, 9, 4)
@@ -82,7 +82,7 @@ struct TrackReferralUseCaseTests {
             try useCase.execute(
                 kind: .imaging,
                 purpose: "Shoulder X-ray",
-                issuedBy: "Dr Tran",
+                issuedBy: "Dr Michael",
                 issuedOn: date(2026, 9, 10),
                 expiresOn: date(2026, 9, 5),
                 today: date(2026, 9, 4)
@@ -98,18 +98,18 @@ struct TrackReferralUseCaseTests {
         try useCase.execute(
             kind: .pathology,
             purpose: "Iron studies re-check",
-            issuedBy: "Dr Tran",
+            issuedBy: "Dr Michael",
             issuedOn: date(2026, 9, 1),
             expiresOn: date(2026, 9, 20),
             today: date(2026, 9, 4)
         )
 
-        // Same referral again, purpose spelt in different case — must be refused.
+        // Same referral again, purpose spelt in different case, must be refused.
         #expect(throws: TrackReferralError.duplicateReferral) {
             try useCase.execute(
                 kind: .pathology,
                 purpose: "iron studies re-check",
-                issuedBy: "Dr Tran",
+                issuedBy: "Dr Michael",
                 issuedOn: date(2026, 9, 1),
                 expiresOn: date(2026, 9, 20),
                 today: date(2026, 9, 4)

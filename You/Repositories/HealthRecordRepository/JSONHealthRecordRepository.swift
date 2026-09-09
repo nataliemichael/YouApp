@@ -9,7 +9,7 @@ import Foundation
 /// so the patient's records survive closing the app but never leave the device.
 ///
 /// Business rules:
-/// - Records live on the patient's device only — no account, no cloud. This is the
+/// - Records live on the patient's device only, no account, no cloud. This is the
 ///   app's privacy promise made concrete.
 /// - Every change writes the whole file atomically, so a crash mid-save can never
 ///   leave the record half-written.

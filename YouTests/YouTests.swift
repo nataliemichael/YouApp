@@ -9,7 +9,7 @@ import Foundation
 import Testing
 @testable import You
 
-/// Tests for `RecordPathologyResultUseCase` — the business rules for typing a
+/// Tests for `RecordPathologyResultUseCase`, the business rules for typing a
 /// marker in from a paper report. Each test starts from an empty record store
 /// and uses fixed dates so results never depend on when the tests run.
 struct RecordPathologyResultUseCaseTests {
@@ -35,7 +35,7 @@ struct RecordPathologyResultUseCaseTests {
             unit: "µg/L",
             referenceRange: ferritinRange,
             collectedOn: date(2026, 9, 1),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             today: date(2026, 9, 3)
         )
 
@@ -55,7 +55,7 @@ struct RecordPathologyResultUseCaseTests {
             unit: "µg/L",
             referenceRange: ferritinRange,
             collectedOn: date(2026, 9, 1),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             today: date(2026, 9, 3)
         )
 
@@ -66,7 +66,7 @@ struct RecordPathologyResultUseCaseTests {
     @Test func test_recordResult_fails_whenValueIsPhysiologicallyImpossible() {
         let (useCase, repository) = makeUseCase()
 
-        // 4000 is more than 10× the top of the 30–300 range — a typo, not a result.
+        // 4000 is more than 10× the top of the 30–300 range, a typo, not a result.
         #expect(throws: RecordPathologyResultError.valueNotPhysiologicallyPlausible(markerName: "Ferritin")) {
             try useCase.execute(
                 markerName: "Ferritin",
@@ -74,7 +74,7 @@ struct RecordPathologyResultUseCaseTests {
                 unit: "µg/L",
                 referenceRange: ferritinRange,
                 collectedOn: date(2026, 9, 1),
-                orderingClinician: "Dr Tran",
+                orderingClinician: "Dr Michael",
                 today: date(2026, 9, 3)
             )
         }
@@ -91,11 +91,11 @@ struct RecordPathologyResultUseCaseTests {
             unit: "µg/L",
             referenceRange: ferritinRange,
             collectedOn: date(2026, 9, 1),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             today: date(2026, 9, 3)
         )
 
-        // Same marker, same date — even spelt differently — must be refused.
+        // Same marker, same date, even spelt differently, must be refused.
         #expect(throws: RecordPathologyResultError.duplicateMarkerForDate(markerName: "ferritin")) {
             try useCase.execute(
                 markerName: "ferritin",
@@ -103,7 +103,7 @@ struct RecordPathologyResultUseCaseTests {
                 unit: "µg/L",
                 referenceRange: ferritinRange,
                 collectedOn: date(2026, 9, 1),
-                orderingClinician: "Dr Tran",
+                orderingClinician: "Dr Michael",
                 today: date(2026, 9, 3)
             )
         }
@@ -121,7 +121,7 @@ struct RecordPathologyResultUseCaseTests {
                 unit: "µg/L",
                 referenceRange: ferritinRange,
                 collectedOn: date(2026, 9, 10),
-                orderingClinician: "Dr Tran",
+                orderingClinician: "Dr Michael",
                 today: date(2026, 9, 3)
             )
         }

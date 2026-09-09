@@ -7,7 +7,7 @@ import Foundation
 import Testing
 @testable import You
 
-/// Tests for `PrepareAppointmentQuestionsUseCase` — turning flagged results into
+/// Tests for `PrepareAppointmentQuestionsUseCase`, turning flagged results into
 /// GP questions. Fresh empty store and fixed dates for every test.
 struct PrepareAppointmentQuestionsUseCaseTests {
 
@@ -36,7 +36,7 @@ struct PrepareAppointmentQuestionsUseCaseTests {
     @Test func test_prepareQuestions_generatesOneQuestionPerFlaggedMarker() throws {
         let result = PathologyResult(
             collectedOn: date(2026, 8, 30),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             markers: [
                 reading("Ferritin", value: 9, range: ferritinRange),        // flagged
                 reading("Haemoglobin", value: 138, range: haemoglobinRange) // healthy
@@ -54,12 +54,12 @@ struct PrepareAppointmentQuestionsUseCaseTests {
     @Test func test_prepareQuestions_usesMostRecentReading_whenMarkerFlaggedTwice() throws {
         let older = PathologyResult(
             collectedOn: date(2026, 6, 1),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             markers: [reading("Ferritin", value: 12, range: ferritinRange)]
         )
         let newer = PathologyResult(
             collectedOn: date(2026, 8, 30),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             markers: [reading("Ferritin", value: 9, range: ferritinRange)]
         )
         let useCase = makeUseCase(results: [older, newer])
@@ -74,7 +74,7 @@ struct PrepareAppointmentQuestionsUseCaseTests {
     @Test func test_prepareQuestions_fails_whenNoMarkersFlagged() {
         let allHealthy = PathologyResult(
             collectedOn: date(2026, 8, 30),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             markers: [reading("Haemoglobin", value: 138, range: haemoglobinRange)]
         )
         let useCase = makeUseCase(results: [allHealthy])
@@ -95,7 +95,7 @@ struct PrepareAppointmentQuestionsUseCaseTests {
     @Test func test_prepareQuestions_fails_whenFlaggedResultsOlderThanTwelveMonths() {
         let stale = PathologyResult(
             collectedOn: date(2025, 6, 1),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             markers: [reading("Ferritin", value: 9, range: ferritinRange)]
         )
         let useCase = makeUseCase(results: [stale])

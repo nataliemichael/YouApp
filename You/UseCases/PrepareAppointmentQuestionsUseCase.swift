@@ -19,7 +19,7 @@ enum PrepareAppointmentQuestionsError: LocalizedError, Equatable {
         case .appointmentDateInPast:
             return "That appointment date has already passed. Pick the date of your upcoming appointment."
         case .noFlaggedResultsToDiscuss:
-            return "Good news — none of your recorded results are outside their healthy range, so there's nothing here to build questions from. You can still write your own notes for the GP."
+            return "Good news, none of your recorded results are outside their healthy range, so there's nothing here to build questions from. You can still write your own notes for the GP."
         case .resultsOlderThanTwelveMonths:
             return "Your flagged results are more than a year old, so questions based on them could mislead your GP. Consider asking for a new test instead."
         }
@@ -36,7 +36,7 @@ enum PrepareAppointmentQuestionsError: LocalizedError, Equatable {
 ///
 /// Business rules, checked in order:
 /// 1. The appointment must be today or later.
-/// 2. Only results from the last twelve months count — older flagged results produce
+/// 2. Only results from the last twelve months count, older flagged results produce
 ///    a suggestion to re-test, not questions.
 /// 3. One question per marker. When a marker was flagged on several reports, the
 ///    most recent reading speaks for it.
@@ -76,7 +76,7 @@ struct PrepareAppointmentQuestionsUseCase {
             throw PrepareAppointmentQuestionsError.resultsOlderThanTwelveMonths
         }
 
-        // One question per marker — the most recent reading speaks for it.
+        // One question per marker, the most recent reading speaks for it.
         var latestPerMarker: [String: (reading: MarkerReading, collectedOn: Date)] = [:]
         for entry in recentReadings {
             let key = entry.reading.markerName.lowercased()

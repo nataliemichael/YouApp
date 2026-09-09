@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import Lottie
 
 /// The first screen: a short "needs your attention" summary, then the patient's
 /// pathology results newest first.
@@ -25,6 +26,26 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(spacing: 14) {
+                            LottieView(animation: .named("Waving"))
+                                .looping()
+                                .frame(width: 116, height: 100)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Welcome back")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                Text("Here's where your health is at today.")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 10, bottom: 4, trailing: 20))
+                }
+
                 if !attentionMarkers.isEmpty || openTaskCount > 0 {
                     Section("Needs your attention") {
                         ForEach(attentionMarkers) { reading in
@@ -32,7 +53,7 @@ struct HomeView: View {
                                 Text("\(reading.markerName) is outside the healthy range")
                             } icon: {
                                 Image(systemName: "exclamationmark.circle.fill")
-                                    .foregroundStyle(.orange)
+                                    .foregroundStyle(AppColours.coral)
                             }
                         }
                         if openTaskCount > 0 {
@@ -40,7 +61,7 @@ struct HomeView: View {
                                 Text("^[\(openTaskCount) follow-up](inflect: true) waiting in Follow-ups")
                             } icon: {
                                 Image(systemName: "checklist")
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(AppColours.teal)
                             }
                         }
                     }
@@ -54,17 +75,28 @@ struct HomeView: View {
                                     .font(.headline)
                                 Text(summaryLine(for: result))
                                     .font(.subheadline)
-                                    .foregroundStyle(result.flaggedMarkers.isEmpty ? Color.secondary : Color.orange)
+                                    .foregroundStyle(result.flaggedMarkers.isEmpty ? Color.secondary : AppColours.coral)
                             }
                         }
                     }
                 }
             }
-            .navigationTitle("You.")
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.hidden)
+            .background(AppColours.paleTeal)
+            .contentMargins(.top, 0, for: .scrollContent)
             .navigationDestination(for: PathologyResult.self) { result in
                 ResultDetailView(result: result)
             }
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("You.")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+                .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         isAddingResult = true

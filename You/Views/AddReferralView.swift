@@ -32,7 +32,7 @@ struct AddReferralView: View {
                         Text("Imaging (scan or X-ray)").tag(Referral.Kind.imaging)
                     }
                     TextField("What it's for, e.g. Iron studies re-check", text: $purpose)
-                    TextField("Written by, e.g. Dr Tran", text: $issuedBy)
+                    TextField("Written by, e.g. Dr Michael", text: $issuedBy)
                 }
 
                 Section("Dates on the referral") {
@@ -48,6 +48,8 @@ struct AddReferralView: View {
             }
             .navigationTitle("Track a referral")
             .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.hidden)
+            .background(AppColours.paleTeal)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }

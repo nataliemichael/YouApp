@@ -29,13 +29,13 @@ struct FollowUpsView: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             if referral.isExpired() {
-                                Text("Expired \(referral.expiresOn.formatted(date: .abbreviated, time: .omitted)) — ask your GP for a new one")
+                                Text("Expired \(referral.expiresOn.formatted(date: .abbreviated, time: .omitted)), ask your GP for a new one")
                                     .font(.subheadline)
-                                    .foregroundStyle(.red)
+                                    .foregroundStyle(AppColours.coral)
                             } else {
                                 Text("Use by \(referral.expiresOn.formatted(date: .abbreviated, time: .omitted))")
                                     .font(.subheadline)
-                                    .foregroundStyle(.orange)
+                                    .foregroundStyle(AppColours.coral)
                             }
                         }
                         .padding(.vertical, 2)
@@ -44,7 +44,7 @@ struct FollowUpsView: View {
 
                 Section("To do") {
                     if viewModel.openTasks.isEmpty {
-                        Text("Nothing waiting — you're up to date.")
+                        Text("Nothing waiting, you're up to date.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -61,8 +61,19 @@ struct FollowUpsView: View {
                     }
                 }
             }
-            .navigationTitle("Follow-ups")
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.hidden)
+            .background(AppColours.paleTeal)
+            .contentMargins(.top, 0, for: .scrollContent)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Follow-ups")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+                .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         isAddingReferral = true
@@ -87,7 +98,7 @@ struct FollowUpsView: View {
                 viewModel.toggleCompletion(of: task)
             } label: {
                 Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(task.isCompleted ? Color.green : Color.secondary)
+                    .foregroundStyle(task.isCompleted ? AppColours.teal : Color.secondary)
             }
             .buttonStyle(.plain)
             .padding(.top, 2)
@@ -109,7 +120,7 @@ struct FollowUpsView: View {
                 } else if task.isOverdue() {
                     Text("Was due \(task.dueOn.formatted(date: .abbreviated, time: .omitted))")
                         .font(.caption)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(AppColours.coral)
                 } else {
                     Text("Due \(task.dueOn.formatted(date: .abbreviated, time: .omitted))")
                         .font(.caption)

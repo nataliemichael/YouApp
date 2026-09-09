@@ -25,7 +25,7 @@ struct ReferenceRangeBar: View {
     }
 
     private var dotColour: Color {
-        reading.isFlagged ? .orange : .green
+        reading.isFlagged ? AppColours.coral : .green
     }
 
     var body: some View {

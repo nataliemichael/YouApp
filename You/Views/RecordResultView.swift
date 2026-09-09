@@ -9,7 +9,7 @@ import SwiftUI
 ///
 /// Two layers guard against typing mistakes: the app refuses entries that could not
 /// come from a lab report (the use case's business rules), and everything else gets a
-/// "does this match your report?" confirmation — only the patient, holding the paper,
+/// "does this match your report?" confirmation, only the patient, holding the paper,
 /// can catch a believable-but-wrong value like 140 typed instead of 14.
 struct RecordResultView: View {
     @ObservedObject var viewModel: ResultsViewModel
@@ -51,7 +51,7 @@ struct RecordResultView: View {
 
                 Section("About the test") {
                     DatePicker("Collected on", selection: $collectedOn, displayedComponents: .date)
-                    TextField("Ordered by, e.g. Dr Tran", text: $orderingClinician)
+                    TextField("Ordered by, e.g. Dr Michael", text: $orderingClinician)
                 }
 
                 Section {
@@ -62,6 +62,8 @@ struct RecordResultView: View {
             }
             .navigationTitle("Add a result")
             .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.hidden)
+            .background(AppColours.paleTeal)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }

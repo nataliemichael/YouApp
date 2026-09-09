@@ -52,12 +52,12 @@ enum SampleData {
     static let results: [PathologyResult] = [
         PathologyResult(
             collectedOn: days(-5),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             markers: [lowFerritin, haemoglobin, vitaminD]
         ),
         PathologyResult(
             collectedOn: days(-96),
-            orderingClinician: "Dr Tran",
+            orderingClinician: "Dr Michael",
             markers: [haemoglobin, thyroid]
         )
     ]
@@ -67,7 +67,7 @@ enum SampleData {
     static let ironStudiesReferral = Referral(
         kind: .pathology,
         purpose: "Iron studies re-check",
-        issuedBy: "Dr Tran",
+        issuedBy: "Dr Michael",
         issuedOn: days(-5),
         expiresOn: days(12)
     )
@@ -75,7 +75,7 @@ enum SampleData {
     static let expiredSkinCheckReferral = Referral(
         kind: .specialist,
         purpose: "Dermatologist skin check",
-        issuedBy: "Dr Tran",
+        issuedBy: "Dr Michael",
         issuedOn: days(-400),
         expiresOn: days(-35)
     )
@@ -92,7 +92,7 @@ enum SampleData {
             referralID: ironStudiesReferral.id
         ),
         FollowUpTask(
-            title: "Ask Dr Tran about low ferritin",
+            title: "Ask Dr Michael about low ferritin",
             detail: "Your ferritin came back below the healthy range on your last test.",
             dueOn: days(7),
             referralID: nil

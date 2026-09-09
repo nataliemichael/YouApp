@@ -13,10 +13,10 @@ import Foundation
 struct PathologyResult: Identifiable, Codable, Hashable {
     var id: UUID = UUID()
 
-    /// The day the blood sample was collected — how patients remember a report, as in "my June bloods".
+    /// The day the blood sample was collected, how patients remember a report, as in "my June bloods".
     let collectedOn: Date
 
-    /// The clinician who ordered the test, as shown on the report, e.g. "Dr Tran".
+    /// The clinician who ordered the test, as shown on the report, e.g. "Dr Michael".
     let orderingClinician: String
 
     /// Every marker the lab measured in this report.

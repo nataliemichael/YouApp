@@ -29,7 +29,7 @@ final class ResultsViewModel: ObservableObject {
     }
 
     /// Records one marker from the entry form. Returns true when saved, false when
-    /// refused — in which case `errorMessage` explains why in the patient's words.
+    /// refused, in which case `errorMessage` explains why in the patient's words.
     func record(
         markerName: String,
         valueText: String,

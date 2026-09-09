@@ -11,7 +11,7 @@ enum RecordPathologyResultError: LocalizedError, Equatable {
     case referenceRangeInvalid
     /// The collection date is after today, which no real report can have.
     case collectionDateInFuture
-    /// The value is outside anything a lab could plausibly report — a likely typo.
+    /// The value is outside anything a lab could plausibly report, a likely typo.
     case valueNotPhysiologicallyPlausible(markerName: String)
     /// This marker is already saved for this date.
     case duplicateMarkerForDate(markerName: String)
@@ -19,13 +19,13 @@ enum RecordPathologyResultError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .referenceRangeInvalid:
-            return "The healthy range doesn't look right — the low number should be smaller than the high number. Copy both numbers from the brackets on your report."
+            return "The healthy range doesn't look right, the low number should be smaller than the high number. Copy both numbers from the brackets on your report."
         case .collectionDateInFuture:
             return "The collection date can't be in the future. Check the date printed on your report and try again."
         case .valueNotPhysiologicallyPlausible(let markerName):
             return "That \(markerName) value doesn't look like it could come from a lab report. Check the number against your paper report before saving."
         case .duplicateMarkerForDate(let markerName):
-            return "You've already saved a \(markerName) result for this date. Check your results list — if you're fixing a mistake, save it under the correct date."
+            return "You've already saved a \(markerName) result for this date. Check your results list. If you're fixing a mistake, save it under the correct date."
         }
     }
 }
@@ -34,7 +34,7 @@ enum RecordPathologyResultError: LocalizedError, Equatable {
 ///
 /// The business operation: the patient copies a line from their report into the app.
 /// Before anything is saved, the app checks the entry could really have come from a
-/// lab report. Values that are merely unusual are still accepted — only the patient,
+/// lab report. Values that are merely unusual are still accepted, only the patient,
 /// holding the paper, can judge those, which is why the screen asks them to confirm
 /// before saving.
 ///
@@ -104,7 +104,7 @@ struct RecordPathologyResultUseCase {
     }
 
     /// Everyday-words explanations for markers the app knows, with an honest
-    /// fallback for ones it doesn't. Educational only — never medical advice.
+    /// fallback for ones it doesn't. Educational only, never medical advice.
     private static func explanation(for markerName: String) -> String {
         let glossary: [String: String] = [
             "ferritin": "Ferritin shows how much iron your body has stored. Low iron stores are a common reason for feeling tired or short of breath.",
