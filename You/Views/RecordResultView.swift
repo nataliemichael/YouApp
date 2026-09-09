@@ -66,10 +66,10 @@ struct RecordResultView: View {
             .background(AppColours.paleTeal)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel", systemImage: "xmark") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save result") { isConfirming = true }
+                    Button("Save result", systemImage: "checkmark") { isConfirming = true }
                         .disabled(isMissingRequiredFields)
                 }
             }

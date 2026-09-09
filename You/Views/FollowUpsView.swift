@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import Lottie
 
 /// Everything the patient still needs to act on: referrals with their expiry dates,
 /// and follow-up tasks sorted by due date. Tapping a task's circle marks it done.
@@ -15,6 +16,26 @@ struct FollowUpsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    Button {
+                        isAddingReferral = true
+                    } label: {
+                        HStack(spacing: 14) {
+                            Text("We'll keep track of referrals through To Do items. Tap here to add a referral!")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.leading)
+                            LottieView(animation: .named("MedicalReport"))
+                                .looping()
+                                .frame(width: 150, height: 150)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Track a new referral")
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 10, bottom: 4, trailing: 20))
+                }
+
                 Section("Your referrals") {
                     if viewModel.referrals.isEmpty {
                         Text("No referrals tracked yet. Add one and the app will remind you before it expires.")
@@ -74,13 +95,6 @@ struct FollowUpsView: View {
                         .fixedSize(horizontal: true, vertical: false)
                 }
                 .sharedBackgroundVisibility(.hidden)
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        isAddingReferral = true
-                    } label: {
-                        Label("Track a referral", systemImage: "plus")
-                    }
-                }
             }
             .sheet(isPresented: $isAddingReferral) {
                 AddReferralView(viewModel: viewModel)
@@ -124,7 +138,7 @@ struct FollowUpsView: View {
                 } else {
                     Text("Due \(task.dueOn.formatted(date: .abbreviated, time: .omitted))")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColours.coral)
                 }
             }
         }

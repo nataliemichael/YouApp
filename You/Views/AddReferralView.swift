@@ -52,10 +52,10 @@ struct AddReferralView: View {
             .background(AppColours.paleTeal)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel", systemImage: "xmark") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Start tracking") { save() }
+                    Button("Start tracking", systemImage: "checkmark") { save() }
                         .disabled(isMissingRequiredFields)
                 }
             }

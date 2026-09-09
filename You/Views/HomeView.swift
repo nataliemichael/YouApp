@@ -14,6 +14,16 @@ struct HomeView: View {
 
     @State private var isAddingResult = false
 
+    /// The patient's first name, kept in UserDefaults. A display preference lives
+    /// here; health records belong in the repository, not UserDefaults.
+    @AppStorage("patientFirstName") private var patientFirstName = ""
+    @State private var isEditingName = false
+    @State private var nameDraft = ""
+
+    private var greeting: String {
+        patientFirstName.isEmpty ? "Welcome back" : "Welcome back, \(patientFirstName)"
+    }
+
     /// Flagged markers from the most recent report.
     private var attentionMarkers: [MarkerReading] {
         resultsViewModel.results.first?.flaggedMarkers ?? []
@@ -33,12 +43,18 @@ struct HomeView: View {
                                 .looping()
                                 .frame(width: 116, height: 100)
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Welcome back")
+                                Text(greeting)
                                     .font(.title2)
                                     .fontWeight(.bold)
-                                Text("Here's where your health is at today.")
+                                Text(patientFirstName.isEmpty
+                                    ? "Tap here to tell us your name."
+                                    : "Here's where your health is at today.")
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
+                            }
+                            .onTapGesture {
+                                nameDraft = patientFirstName
+                                isEditingName = true
                             }
                         }
                     }
@@ -67,8 +83,8 @@ struct HomeView: View {
                         if openTaskCount > 0 {
                             Label {
                                 Text(openTaskCount == 1
-                                    ? "1 follow-up waiting in Follow-ups"
-                                    : "\(openTaskCount) follow-ups waiting in Follow-ups")
+                                    ? "1 task waiting in Follow-ups"
+                                    : "\(openTaskCount) tasks waiting in Follow-ups")
                             } icon: {
                                 Image(systemName: "checklist")
                                     .foregroundStyle(AppColours.teal)
@@ -90,6 +106,26 @@ struct HomeView: View {
                         }
                     }
                 }
+
+                Section {
+                    Button {
+                        isAddingResult = true
+                    } label: {
+                        HStack(spacing: 14) {
+                            Text("Got a new blood test? Tap here to add a result from your report!")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.leading)
+                            LottieView(animation: .named("ECG"))
+                                .looping()
+                                .frame(width: 140, height: 67)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Add a result")
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 20))
+                }
             }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
@@ -107,16 +143,18 @@ struct HomeView: View {
                         .fixedSize(horizontal: true, vertical: false)
                 }
                 .sharedBackgroundVisibility(.hidden)
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        isAddingResult = true
-                    } label: {
-                        Label("Add a result", systemImage: "plus")
-                    }
-                }
             }
             .sheet(isPresented: $isAddingResult) {
                 RecordResultView(viewModel: resultsViewModel)
+            }
+            .alert("What should we call you?", isPresented: $isEditingName) {
+                TextField("Your name", text: $nameDraft)
+                Button("Save") {
+                    patientFirstName = nameDraft.trimmingCharacters(in: .whitespaces)
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Just for your greeting. It stays on your device, like everything else.")
             }
             .onAppear {
                 resultsViewModel.load()
