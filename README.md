@@ -11,6 +11,8 @@ The design stakeholder is Sana, a university student managing her own health adm
 ## What the app does
 
 - **Home**: anything needing attention, then pathology results newest first
+- **Needs your attention**: Home picks the single most urgent thing to do next across referrals and tasks, so the patient always knows what comes first
+- **Greeting**: Home asks for a first name and keeps it in UserDefaults. It is a display preference, not health data, so it stays out of the record store
 - **Result detail**: each marker on a visual healthy-range bar with a plain-language explanation (educational only, never medical advice)
 - **Add a result**: type a marker in from a paper report; impossible values are refused, believable ones are confirmed against the paper before saving
 - **Follow-ups**: tracked referrals with expiry warnings, and tasks sorted by due date, tracking a referral automatically books a reminder three days before it expires
@@ -24,23 +26,26 @@ ViewModels (MVVM)      ResultsViewModel, FollowUpsViewModel
 Use Cases              RecordPathologyResultUseCase, TrackReferralUseCase,
                        PrepareAppointmentQuestionsUseCase
 Domain Models + Repos  PathologyResult, MarkerReading, ReferenceRange, Referral,
-                       FollowUpTask, AppointmentPrep · HealthRecordRepository
+                       FollowUpTask, AppointmentPrep, PatientActionable protocol
+                       HealthRecordRepository
 Data                   HealthRecord.json — on device only, atomic writes
 ```
 
 - Business rules live only in the use cases, each throws a typed error written for the patient with a recovery path.
 - Domain records are structs. The repository is the app's one shared class, behind a protocol with two implementations: in-memory (used by tests) and JSON (used by the app). Swapping storage changes one line in `YouApp`.
 - Records never leave the device: no account, no cloud, honouring the privacy first commitment from Assessment 1.
+- PrepareAppointmentQuestionsUseCase is built and tested but not yet wired to a screen. It is the next feature to add.
 
 ## Running it
 
 1. Open `You.xcodeproj` in Xcode 16 or later
-2. Pick an iPhone simulator and press Cmd+R
-3. First launch seeds sample records for the persona Sana; everything you add persists between launches
+2. Xcode will download the Lottie package (lottie-ios) the first time the project opens. Wait for it to finish before building
+3. Pick an iPhone simulator and press Cmd+R
+4. First launch seeds sample records for the persona Sana; everything you add persists between launches
 
 ## Tests
 
-Cmd+U runs 15 unit tests (Swift Testing) covering every use case: happy paths, boundary conditions (a value exactly on a range bound; a referral expiring within the reminder window) and every domain error case. Tests run against the in-memory store with fixed dates, so they are deterministic.
+Cmd+U runs 17 unit tests (Swift Testing) covering every use case: happy paths, boundary conditions (a value exactly on a range bound; a referral expiring within the reminder window) and every domain error case. Tests run against the in-memory store with fixed dates, so they are deterministic.
 
 ## Disclaimer
 
